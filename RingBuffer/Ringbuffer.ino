@@ -1,5 +1,5 @@
 /*
- *	RingBuffer.h
+ *	RingBuffer.ino
  *
  *	copyright (c) Andreas Kraft 2018
  *	Licensed under the BSD 3-Clause License. See the LICENSE file for further details.

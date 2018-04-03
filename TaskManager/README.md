@@ -64,9 +64,10 @@ The *TaskManager* is created by simply instantiating it, perhaps as a global var
 TaskManager manager;
 ```
 
-#### Adding Tasks
+#### Adding and Starting Tasks
 
-The following adds a task that is executed every second (1000 milliseconds). *doSomething* is the name of a function that is called to execute the task's code. The task is activated immediately.
+The following adds a task that is executed every second (1000 milliseconds). 
+*doSomething* is the name of a function that is called to execute the task's code. The task is activated immediately.
 
 ```cpp
 manager.addTask(doSomething, 1000);
@@ -78,14 +79,16 @@ bool doSomething() {
 }
 ```
 
-If one doesn't want to activate a task immediately the *add()* function returns the task identifier that can be used later to activate the task.
+If one doesn't want to activate a task immediately the *add()* function returns
+the task identifier that can be used later to activate the task.
 
 ```cpp
 int taskId = manager.addTask(doSomething, 1000, false);
 manager.startTask(taskId);
 ```
 
-The *startTask()* method can also be used to prolong the execution or to limit the number of executions of a task to a specific time or number of executions.
+The *startTask()* method can also be used to prolong the execution or to limit 
+the number of executions of a task to a specific time or number of executions.
 
 The following task would start after 5 seconds, run every every second, and be executed 10 times.
 
@@ -94,14 +97,30 @@ int taskId = manager.addTask(doSomething, 1000, false);
 manager.startTask(taskId, 5000, 0, 10);
 ```
 
-The following task would start immediately, run every every second, and stop after 20 seconds.
+The following task would start immediately, run it every second, and stop after 20 seconds.
 
 ```cpp
 int taskId = manager.addTask(doSomething, 1000, false);
 manager.startTask(taskId, 0, 20000, 0);
 ```
 
-To add initialization and de-initialization handler to a task, the following version of the *addTask()* method must be used. This would start the task, call the *initialization handler* function, run the task every second 10 times, and then call the *de-initialization handler* function.
+The following code is similar to the previous example. The difference is that 
+the last parameter specifies whether a task's interval should be measured when
+starting the regular execution of the task (true), ie. including the task's execution
+time, or whether it should be measured when the task finished the execution 
+(false), ie. excluding the task's execution time.  
+The default for that parameter in other versions where it is not specified 
+is *true*, ie. include the task's execution time.
+
+```cpp
+int taskId = manager.addTask(doSomething, 1000, false);
+manager.startTask(taskId, 0, 20000, 0, false);	// exclude tasks execution time from interval time
+```
+
+To add initialization and de-initialization handler to a task, the following
+version of the *addTask()* method must be used. This would start the task, call
+the *initialization handler* function, run the task every second 10 times, and
+then call the *de-initialization handler* function.
 
 ```cpp
 int taskId = manager.addTask(doSomething, initSomething, deinitSomething, 1000, false);
@@ -123,7 +142,11 @@ bool deinitSomething() {
 
 #### Running Tasks
 
-Task initialization (as described above) could be done in the the *setup()* function of an Arduino sketch, but task execution must be triggered regularly by calling the *TaskManager*'s *runTasks()* function. Ideally, this is done in the *loop()* function of a sketch. In task-oriented programs that might be the only statement in that function.
+Task initialization (as described above) could be done in the the *setup()*
+function of an Arduino sketch, but task execution must be triggered regularly by
+calling the *TaskManager*'s *runTasks()* function. Ideally, this is done in
+the *loop()* function of a sketch. In task-oriented programs that might be the
+only statement in that function.
 
 ```cpp
 void loop() {
@@ -133,7 +156,8 @@ void loop() {
 
 #### Stopping Tasks
 
-To stop a running task one calls the *TaskManager*'s *stop()* method. If set, a *de-initialization handler* is called.
+To stop a running task one calls the *TaskManager*'s *stop()* method. If set,
+a *de-initialization handler* is called.
 
 ```cpp
 manager.stopTask(taskId);
@@ -141,7 +165,9 @@ manager.stopTask(taskId);
 
 #### Removing Tasks
 
-To remove a task one calls the *removeTask()* method. The *stopTask()* method is called for the task, but the return value of the *de-initialization handler* is ignored, though. 
+To remove a task one calls the *removeTask()* method. The *stopTask()* method
+is called for the task, but the return value of the *de-initialization handler*
+is ignored, though. 
 
 ```cpp
 manager.removeTask(taskId);
@@ -204,6 +230,13 @@ Start a task.
 *startAfter* is the number of milliseconds after which the task is executed for the first time. 0 means immediately.  
 *runFor* is the number of time in milliseconds for the task to run. 0 means forever.  
 *iterations* is the number of times for the task to run. 0 means forever.
+- **void startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations, bool runOnTime)**  
+Start a task.  
+*taskId* is the ID of the task to be started.  
+*startAfter* is the number of milliseconds after which the task is executed for the first time. 0 means immediately.  
+*runFor* is the number of time in milliseconds for the task to run. 0 means forever.  
+*iterations* is the number of times for the task to run. 0 means forever.  
+*runOnTime* if true then the TasManager tries to run the task exactly on the time slice (ie. after the interval time, including the time the task needs to execute), otherwise after *interval* ms after the task handler returned.  The default for other *startTask()* methods for this parameter is *true*.
 - **void stopTask(long taskId)**  
 Stop a task.  
 *taskId* is the ID of the task to be stopped.

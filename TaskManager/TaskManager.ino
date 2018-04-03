@@ -25,13 +25,19 @@ void TaskManager::runTasks() {
 		Task *task = tasks.get(i);
 
 		if (task->running && runTaskMs >= task->nextRun) {
-			task->nextRun = task->nextRun + task->interval;	// next run: n ms measured from *before* current task execution
+			if (task->runOnTime) {
+				task->nextRun = task->nextRun + task->interval; // next run: n ms measured from *before* current task execution
+			}
 			if (task->inStart || task->inStop) {	// guard against exec tasks in start or stop handler
 				continue;
 			}
 
 			bool result = (*task->taskHandler)();
 			task->runCount++;
+			if ( ! task->runOnTime) {
+				task->nextRun = millis() + task->interval; // next run: current time, after task handler returned, + intervall ms
+			}
+
 			if ( ! result) {
 				stopTask(task->id);
 				continue;
@@ -76,6 +82,7 @@ long TaskManager::addTask(TaskHandler taskHandler, TaskHandler initTaskHandler, 
 	task->running = false;
 	task->inStart = false;
 	task->inStop = false;
+	task->runOnTime = true;
 	tasks.add(task);
 
 	if (autoStart) {
@@ -120,7 +127,12 @@ void TaskManager::startTask(long taskId) {
 }
 
 
+
 void TaskManager::startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations) {
+	startTask(taskId, startAfter, runFor, iterations, true);
+}
+
+void TaskManager::startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations, bool runOnTime) {
 	Task *task = _getTaskById(taskId);
 	if (task) {
 		if (task->inStart) {	// prevent double/endless calls
@@ -137,6 +149,7 @@ void TaskManager::startTask(long taskId, unsigned long startAfter, unsigned long
 		task->runCount = 0;
 		task->running = true;
 		task->nextRun = (runTaskMs > 0 ? runTaskMs : millis()) + startAfter;
+		task->runOnTime = runOnTime;
 
 		if (runFor > 0) {
 			task->runUntil = task->nextRun + runFor;

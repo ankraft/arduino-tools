@@ -14,7 +14,6 @@
 
 typedef bool (*TaskHandler)();
 
-// TODO: this could be a class
 // Structure to represent a single task
 typedef struct {
 	long 			id;
@@ -29,6 +28,7 @@ typedef struct {
 	bool 			running;
 	bool			inStart;
 	bool			inStop;
+	bool 			runOnTime;	// true = try to run exactly on time slice, otherwise now + intervall
 } Task;
 
 
@@ -54,14 +54,14 @@ public:
   	// *taskHandler* is a pointer to a function that is called for executing the task.
   	// *interval* is the time in milliseconds between task executions.
   	// The method returns a *taskID*, or -1 in case of an error.
-	long 	addTask(TaskHandler taskHandler, unsigned long interval); // return: taskID or -1
+	long 	addTask(TaskHandler taskHandler, unsigned long interval);
 
 	// Add a new task.
   	// *taskHandler* is a pointer to a function that is called for executing the task.
   	// *interval* is the time in milliseconds between task executions.
   	// *autoStart* indicates whether the task execution should start implicitly, or must be started via one of the *startTask()* methods.
   	// The method returns a *taskID*, or -1 in case of an error.
-	long 	addTask(TaskHandler taskHandler, unsigned long interval, bool autoStart); // return: taskID or -1
+	long 	addTask(TaskHandler taskHandler, unsigned long interval, bool autoStart); 
 
 	// Add a new task.
   	// *taskHandler* is a pointer to a function that is called for executing the task.
@@ -70,7 +70,7 @@ public:
   	// *interval* is the time in milliseconds between task executions.
   	// *autoStart* indicates whether the task execution should start implicitly, or must be started via one of the *startTask()* methods.
   	// The method returns a *taskID*, or -1 in case of an error.
-	long 	addTask(TaskHandler taskHandler, TaskHandler initTaskHandler, TaskHandler deinitTaskHandler, unsigned long interval, bool autoStart); // return: taskID or -1
+	long 	addTask(TaskHandler taskHandler, TaskHandler initTaskHandler, TaskHandler deinitTaskHandler, unsigned long interval, bool autoStart); 
 
 	// Remove a task from the task manager.
 	// *taskId* is the ID of the task to be removed.
@@ -92,6 +92,14 @@ public:
 	// *runFor* is the number of time in milliseconds for the task to run. 0 means forever.
 	// *iterations* is the number of times for the task to run. 0 means forever.
 	void    startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations);
+
+	// Start a task.
+	// *taskId* is the ID of the task to be started.
+	// *startAfter* is the number of milliseconds after which the task is executed for the first time. 0 means immediately.
+	// *runFor* is the number of time in milliseconds for the task to run. 0 means forever.
+	// *iterations* is the number of times for the task to run. 0 means forever.
+ 	// *runOnTime* if true then the TasManager tries to run the task exactly on the time slice (ie. after the interval time, including the time the task needs to execute), otherwise after *interval* ms after the task handler returned.  The default for other *startTask()* methods for this parameter is *true*.
+	void    startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations, bool runOnTime);
 
 	// Stop a task.
 	// *taskId* is the ID of the task to be stopped.

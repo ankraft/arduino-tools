@@ -61,6 +61,8 @@ The signature for an *de-initialization handler* is the same as for an *executio
 #### Creating the TaskManager
 The *TaskManager* is created by simply instantiating it, perhaps as a global variable.
 ```cpp
+# include "TaskManager.h"
+
 TaskManager manager;
 ```
 

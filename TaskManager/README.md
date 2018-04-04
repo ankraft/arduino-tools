@@ -245,4 +245,4 @@ Stop a task.
 
 
 ## License
- Licensed under the BSD 3-Clause License. See the [LICENSE](../LICENSE) file for further details.
+Licensed under the BSD 3-Clause License. See the [LICENSE](../LICENSE) file for further details.

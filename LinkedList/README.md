@@ -39,4 +39,4 @@ Clear the list of all objects. The objects are deleted.
 
 
 ## License
- Licensed under the BSD 3-Clause License. See the [LICENSE](../LICENSE) file for further details.
+Licensed under the BSD 3-Clause License. See the [LICENSE](../LICENSE) file for further details.

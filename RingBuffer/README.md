@@ -138,4 +138,4 @@ Using this assignment operator is equivalent to calling the *get()* method.
 Using this assignment operator is equivalent to calling the *add()* method.
 
 ## License
- Licensed under the BSD 3-Clause License. See the [LICENSE](../LICENSE) file for further details.
+Licensed under the BSD 3-Clause License. See the [LICENSE](../LICENSE) file for further details.

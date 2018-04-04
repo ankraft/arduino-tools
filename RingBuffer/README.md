@@ -98,7 +98,16 @@ if ( ! ringBuffer.isFull())
     ringBuffer.add(anElement);
 ```
 
-## Class methods
+## Class Documentation
+
+### Constructor
+- **RingBuffer(int size)**  
+The class's constructor.  
+*size* specifies the maximum size of the ring buffer, ie. the number of
+elements the ring buffer can hold before starting to overwrite the oldest 
+element.
+
+### Class Methods
 - **void add(T item)**  
 Add an *item* to the end of the ring buffer. If the buffer is full, then the oldest item in the buffer is overwritten.
 - **T get(int index)**  

@@ -191,9 +191,14 @@ The *reset()* method can be used to stop and remove all tasks of a *TaskManager*
 manager.reset();
 ```
 
-## Class methods
-The *TaskManager* has the following public methods:
+## Class Documentation
+The *TaskManager* has the following public methods.
 
+### Class Constructor
+- **TaskManager()**  
+This class only has a simple constructor.
+
+### Class Methods
 - **long addTask(TaskHandler taskHandler, unsigned long interval)**  
 Add a new task.  
 *taskHandler* is a pointer to a function that is called for executing the task.  
@@ -213,16 +218,6 @@ Add a new task.
 *interval* is the time in milliseconds between task executions.  
 *autoStart* indicates whether the task execution should start implicitly, or must be started via one of the *startTask()* methods.  
 The method returns a *taskID*, or -1 in case of an error.
-- **bool isTaskRunning(long taskId)**  
-Check whether a task is currently running.
-- **void removeTask(long taskId)**  
-Remove a task from the task manager.  
-*taskId* is the ID of the task to be removed.
-- **void reset()**  
-Stop and remove all tasks and reset the task manager.
-- **void runTasks()**  
-Check for runnable tasks and execute them.  
-This method must be called very often and regularly, ideally in the *loop()* function of a sketch.
 - **void startTask(long taskId)**  
 Start a task.  
 *taskId* is the ID of the task to be started.
@@ -242,6 +237,16 @@ Start a task.
 - **void stopTask(long taskId)**  
 Stop a task.  
 *taskId* is the ID of the task to be stopped.
+- **void removeTask(long taskId)**  
+Remove a task from the task manager.  
+*taskId* is the ID of the task to be removed.
+- **bool isTaskRunning(long taskId)**  
+Check whether a task is currently running.
+- **void reset()**  
+Stop and remove all tasks and reset the task manager.
+- **void runTasks()**  
+Check for runnable tasks and execute them.  
+This method must be called very often and regularly, ideally in the *loop()* function of a sketch.
 
 
 ## License

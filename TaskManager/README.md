@@ -1,6 +1,8 @@
 # TaskManager
 
-This class implements a simple task manager to handle the execution of multiple tasks for task-oriented programs. Tasks can be started, stopped, executed and scheduled to be executed after a certain time.
+This class implements a simple task manager to handle the execution of multiple tasks for task-oriented programs. Tasks can be started, stopped, executed and scheduled to be executed after a certain time. 
+
+Using the class tremendously simplifies the handling of regular taks, such as polling input, updating output pins, or similar processes.
 
 ## Installation
 
@@ -16,8 +18,8 @@ Instances of the class *TaskManager* are handling tasks and their execution. The
 A task has the following characteristics:
 
 - It has exactly one *execution handler*. The execution handler is called periodically to execute a recurring task.
-- It may have an *initialization handler* and an *de-initialization handler* to initialize and finalize a tasks.
-- A task is called *periodically*, every a specified number of milliseconds.
+- It may have an *initialization handler* and an *de-initialization handler* to initialize and finalize a task.
+- A task is called *periodically*, after a specified number of milliseconds.
 - A task can run forever or a specified number of times.
 - A task's first execution can be delayed for some time.
 - A task may only run for a certain period.
@@ -25,9 +27,9 @@ A task has the following characteristics:
 
 **Please note**: Tasks are not executed in parallel. No two tasks can really execute their handlers at the same time. 
 
-A task should return as fast a possible in order to give other tasks a chance to execute their job. If a task takes longer to execute its job in the execution handler than another task's specified interval, the other task can only be executed after that longer task finishes its execution handler.
+A task should return as fast a possible in order to give other tasks a chance to execute their job. If a task takes longer to execute its job in the execution handler than another task's specified interval, the other task can only be executed after that longer running task finishes its execution handler.
 
-**Please note**: An execution handler should **never** call ```delay()``` or other functions that deliberately delay code execution artificially.
+**Please note**: An execution handler should **never** call ```delay()```, endless loops, or other blocking functions that deliberately delay code execution artificially.
 
 ### Execution handler
 An execution handler is a single function that is called periodically. It has the following signature:

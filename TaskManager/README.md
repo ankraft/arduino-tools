@@ -6,7 +6,7 @@ Using the class tremendously simplifies the handling of regular taks, such as po
 
 ## Installation
 
-- Just copy the files from this directory to your project.
+- Copy the files from this directory to your project.
 - Also copy the .h and .ino files from the [LinkedList](../LinkedList/README.md) sub-project to your project. 
 
 ## Usage

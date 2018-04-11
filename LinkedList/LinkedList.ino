@@ -35,16 +35,16 @@ bool LinkedList<T>::add(T object, int position) {
 		return false;
 	}
 	
-	LNode<T> *tmp = new LNode<T>();
-	tmp->data = object;
+	LNode<T> *node = new LNode<T>();
+	node->data = object;
 
 	if (position == 0) {
-		tmp->next = head;
-		head = tmp;
+		node->next = head;
+		head = node;
 	} else {
-		LNode<T> *node = _getNodeAtPosition(position-1);
-		tmp->next = node->next;
-		node->next = tmp;
+		LNode<T> *prev = _getNodeAtPosition(position-1);
+		node->next = prev->next;
+		prev->next = node;
 	}
 	cnt++;
 	return true;
@@ -98,8 +98,7 @@ bool LinkedList<T>::remove(int position) {
 		LNode<T> *prev = _getNodeAtPosition(position-1);
 		prev->next = node->next;
 	}
-
-	delete(node);
+	delete node;
 	cnt--;
 	return true;
 }

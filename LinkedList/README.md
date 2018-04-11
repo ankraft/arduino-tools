@@ -31,11 +31,14 @@ Return the first object from the list. This method returns a new object of class
 - **T last()**  
 Return the first object from the list. This method returns a new object of class *T* in case of an error.
 - **bool remove()**  
-Remove the last object from the list. This method returns true if successful, or false otherwise.
+Remove the last object from the list. This method returns true if successful, or false otherwise.  
+If T is a class (instead of T *, a class pointer) then the object is deleted as well.
 - **bool remove(int position)**  
-Remove the object at position *position*. The object is deleted. This method returns true if successful, or false otherwise.
+Remove the object at position *position*. The object is deleted. This method returns true if successful, or false otherwise.  
+If T is a class (instead of T *, a class pointer) then the object is deleted as well.
 - **void clear()**  
-Clear the list of all objects. The objects are deleted.
+Clear the list of all objects.  
+If T is a class (instead of T *, a class pointer) then the objects in the list are deleted as well.
 
 
 ## License

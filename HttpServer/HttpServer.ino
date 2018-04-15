@@ -128,7 +128,6 @@ void HttpServer::check() {
 				answer += "\r\n\r\n";
 				answer += result.content;
 			}
-			Serial.println(answer);
 			client.print(answer);
 		} else {
 			client.println("HTTP/1.1 501 Not Implemented");

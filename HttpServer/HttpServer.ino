@@ -119,12 +119,16 @@ void HttpServer::check() {
 			if (result.type.length() > 0) {
 				answer += "\nContent-Type: " + result.type;
 			}
+			if (result.attributes.length() > 0) {
+				answer += "\n" + result.attributes;
+			}
 			if (result.content.length() > 0) {
 				answer += "\nContent-Length: ";
 				answer += result.content.length();
 				answer += "\r\n\r\n";
 				answer += result.content;
 			}
+			Serial.println(answer);
 			client.print(answer);
 		} else {
 			client.println("HTTP/1.1 501 Not Implemented");

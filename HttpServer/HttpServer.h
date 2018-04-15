@@ -25,6 +25,7 @@ public:
 	// Struct that holds a request handler's result.
 	struct RequestResult {
 		int returnCode;
+		String attributes;
 		String type;
 		String content;
 	};

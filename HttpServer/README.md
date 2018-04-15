@@ -43,11 +43,16 @@ HttpServer::RequestResult aRequestHandler(String path, HttpServer::Method method
 	// ... do something meaningful here...
 
 	result.returnCode = 200;	// OK
+	result.attributes = "X-attribute1: value\nX-attribute2: value"; // additional attributes
+	result.type = "text/plain";
+	result.content ="Hello, world!";
 	return result;
 }
 ```
 
 A request handler must always return a *RequestResult* struct with a *returnCode* set to a valid HTTP status code. 200, for example, means OK. See [https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) for more details.
+
+In addition to the mandatory *returnCode* a request handler can add content, the content type, and additional attributes to add to the answer. Multiple attributes can be provided, but they must be separated by a new-line (\n) character.
 
 A request handler for a GET request and path */foo/bar* that uses this function is registered as follows, e.g. in the setup() function after instantiating the HTTP Server:
 
@@ -116,8 +121,9 @@ A request handler is called with the following parameters:
 	- *type*: The request's content-type property.
 	- *content*: The actual request content.
 - **struct RequestResult**  
-This structure defines a container for the request's answer. It has the following fields:
+This structure defines a container for a *RequestHandler*'s answer. It has the following fields:
 	- *int returnCode*: A valid numeric HTTP status code.
+	- *String attributes*: Additional optional attributes for the answer.
 	- *String type*: The MIME content-type of the answer.
 	- *String content*: The actual textual content of the result.
 - **enum Method**  

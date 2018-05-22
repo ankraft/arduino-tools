@@ -264,7 +264,7 @@ content type, and creation date of the retrieved content instance.
 
 #### Subscription
 
-Note, that notifications need to be enabled before creating a Subscription resource (see [Notification Methods](#NotificationMethods) below).
+Note, that notifications need to be enabled before creating a Subscription resource (see [Notification Methods](#notificationmethods) below).
 
 - **String getSubscription(String path)**  
 Retrieve a Subscription resource. The Subscription is created in case
@@ -319,7 +319,7 @@ Delete a resource from the CSE.
 The OneM2M class defines the following static methods for all instances of the 
 class.
 
-#### Notification Methods[](#NotificationMethods)
+#### Notification Methods[](#notificationmethods)
 - **static void setupNotifications(void)**  
 Setup and initialize the notification sub-system. This method starts an HTTP
 server that listens on port 1440 for notification events from connected CSEs.

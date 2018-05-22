@@ -264,7 +264,7 @@ content type, and creation date of the retrieved content instance.
 
 #### Subscription
 
-Note, that notifications need to be enabled before creating a Subscription resource (see [Notification Methods](#notificationmethods) below).
+Note, that notifications need to be enabled before creating a Subscription resource (see [Notification Methods](#notification-methods) below).
 
 - **String getSubscription(String path)**  
 Retrieve a Subscription resource. The Subscription is created in case

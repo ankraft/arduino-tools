@@ -14,7 +14,7 @@ The following example creates a ring buffer for up to 20 ```String``` objects. I
 
 
 ```cpp
-# include "RingBuffer.h"
+# include "Ringbuffer.h"
 
 RingBuffer<String>	ringBuffer(20);
 ```

@@ -7,7 +7,7 @@
  *	Implementation of a non-blocking ring-buffer class template.
  */
 
-#include "RingBuffer.h"
+#include "Ringbuffer.h"
 
 template<typename T>
 RingBuffer<T>::RingBuffer(int size) {

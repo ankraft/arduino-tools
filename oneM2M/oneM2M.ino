@@ -10,6 +10,7 @@
 // TODO: support labels
 
 #include <ArduinoJson.h>
+#include "oneM2M.h"
 
 
 int 		 								 OneM2M::_jsonSize = 1024;
@@ -159,7 +160,7 @@ String OneM2M::addSubscription(String path) {
 
 
 String OneM2M::getSubscriptionNotify(String path, NotificationCallback callback) {
-	String sc = cse.getSubscription(path);
+	String sc = getSubscription(path);
 
 	if (sc.length() > 0 and callback != NULL) {
 		addNotificationCallback(getResourceIdentifier(sc), callback);

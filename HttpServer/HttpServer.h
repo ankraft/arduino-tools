@@ -35,6 +35,12 @@ public:
 		String content;
 	};
 
+	// Struct that holds a key/value pair of a request or form request arguments
+	struct RequestArgument {
+		String key;
+		String value;
+	};
+
 	// typedef for request handlers
 	typedef RequestResult (*RequestHandler)(String path, Method method, long length, String type, char *content);
 
@@ -51,6 +57,9 @@ private:
 	WiFiServer	 			*server;
 	RequestHandler			 defaultRequestHandler;
 	LinkedList<Handler *>	 handlers;
+	
+	static int 				 requestArgumentsCount;				// number of current request arguments
+	static RequestArgument 	*requestArguments;					// array of current request arguments
 
 	void 			initServer(int port);						// init the WifiServer
 	Method 			getMethod(String v);						// get the HTTP method from a string
@@ -105,6 +114,23 @@ public:
 	//	*path* is a matching request path.
 	//	*method* is a matching request method (see enum *Method* below).
 	bool hasHandler(String path, Method method);
+
+	//	Parse a request path for arguments. Found arguments are stored them for
+	//	later retrieval and processing. Only one set of arguments can be stored 
+	//	at a time for all instances of the HTTPServer class. The names and 
+	//	arguments are URL decoded in the process.
+	//	*path* the request path to parse.
+	static int parseRequestArguments(String path);
+
+	//	Check for and retrieve a formerly stored request argument. If the
+	//	argument couldn't be found then an empty string is returned.
+	//	*key* the name of the argument.
+	static String getRequestArgument(String key);
+
+	//	Decode a URL encoded string. The decoded string is returned.
+	//	*value* the String to decode.
+	static String urlDecode(String value);
+
 
 };
 

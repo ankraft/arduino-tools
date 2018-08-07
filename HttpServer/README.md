@@ -23,12 +23,12 @@ The following code shows how to instantiate a new HTTP Server on port 80.
 HttpServer *server;
 
 void setup() {
-	...
-	// establish a network connection, e.g. WiFi, BEFORE instantiating a HTTP Server
- 	aNetworkInitFunction();	
- 	...
- 	server = new HttpServer();	// new server on port 80 
- 	...
+  ...
+  // establish a network connection, e.g. WiFi, BEFORE instantiating a HTTP Server
+   aNetworkInitFunction();	
+   ...
+   server = new HttpServer();	// new server on port 80 
+   ...
 }
 ```
 
@@ -38,15 +38,15 @@ This code snippet shows how to define a request handler
 
 ```cpp
 HttpServer::RequestResult aRequestHandler(String path, HttpServer::Method method, long length, String type, char *content) {
-	HttpServer::RequestResult result;
+  HttpServer::RequestResult result;
 
-	// ... do something meaningful here...
+  // ... do something meaningful here...
 
-	result.returnCode = 200;	// OK
-	result.attributes = "X-attribute1: value\nX-attribute2: value"; // additional attributes
-	result.type = "text/plain";
-	result.content ="Hello, world!";
-	return result;
+  result.returnCode = 200;	// OK
+  result.attributes = "X-attribute1: value\nX-attribute2: value"; // additional attributes
+  result.type = "text/plain";
+  result.content ="Hello, world!";
+  return result;
 }
 ```
 
@@ -57,9 +57,9 @@ In addition to the mandatory *returnCode* a request handler can add content, the
 A request handler for a GET request and path */foo/bar* that uses this function is registered as follows, e.g. in the setup() function after instantiating the HTTP Server:
 
 ```cpp
-	...
-	server->addHandler("/foo/bar", HttpServer::GET, aRequestHandler);
-	...
+...
+server->addHandler("/foo/bar", HttpServer::GET, aRequestHandler);
+...
 ```
 
 ### Fallback Handler
@@ -70,6 +70,27 @@ The first one is that the HTTP Server has a default request handler set during i
 
 If there is no default request handler defined than the HTTP Server returns an answer with a status code of 501 *Not Implemented*.
 
+
+### Request Argument Handling
+
+A request handler may receive arguments, for example in a GET request itself or in the body of a POST request. A couple of static class methods can be utilized in order to parse and handle these parameters.
+
+The following example shows how to handle the request ``GET /aHander?argument1=value&argument2=another%20value``.
+
+```cpp
+HttpServer::RequestResult aHandler(String path, HttpServer::Method method, long length, String type, char *content) {
+   ...
+
+  // Parse request arguments
+  int numberOfArguments = HttpServer::parseRequestArguments(path);
+  if (numberOfArguments == 2) {
+    Serial.println(HttpServer::getRequestArgument("argument1"));
+    Serial.println(HttpServer::getRequestArgument("argument2"));  	
+  }
+
+  ...
+ }
+```
 
 ## Class Definitions
 
@@ -90,10 +111,14 @@ Constructor to initialize the HTTP Server.
 *defaultRequestHandler* is a function that is called in case no other matching handler was defined for that request.
 
 
-### Methods
+### Server Methods
+
 - **void check()**  
 Check for an incoming HTTP request. This method must be called very regularly in order to receive and process requests.  
 It returns either immediately (when there is no pending request to process), or after a request has been processed (by calling the appropriate handler function) and sending the answer back to the client.
+
+### Request Handling Methods
+
 - **void addHandler(String path, Method method, RequestHandler handler)**  
 Add a new request handler function.  
 *path* is the matching request path.  
@@ -108,6 +133,19 @@ Remove a previously defined handler function.
 Check whether a handler function has been defined for a path and method.  
 *path* is a matching request path.  
 *method* is a matching request method (see enum *Method* below).
+
+### Request Argument Handling
+
+- **static int parseRequestArguments(String path)**  
+Parse a request path for arguments. Found arguments are stored them for later retrieval and processing. Only one set of arguments can be stored at a time for all instances of the HTTPServer class. The names and arguments are URL decoded in the process.  
+*path* the request path to parse. 
+- **static String getRequestArgument(String key)**  
+Check for and retrieve a formerly stored request argument. If the argument couldn't be found then an empty string is returned.  
+*key* the name of the argument.
+- **static String urlDecode(String value)**  
+Decode a URL encoded string. The decoded string is returned.  
+*value* the String to decode.
+
 
 ### Types and Definitions
 
@@ -133,7 +171,7 @@ The special command *ALL* can be used as a wild card to match any HTTP command.
 ## Limitations
 
 - Path matching for request handlers does not yet support wild cards. A path must be a precise match.
-- Only one request at a time can be processed.
+- Only one request at a time can be processed. This also includes request argument parsing.
 - Only textual content can be returned in a request's answer, no binary data.
 
 

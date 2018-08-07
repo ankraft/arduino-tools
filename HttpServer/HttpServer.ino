@@ -11,6 +11,12 @@
 
 // TODO: support wildcards in paths
 
+// TODO Documentation
+
+
+int 							 HttpServer::requestArgumentsCount = 0;
+HttpServer::RequestArgument 	*HttpServer::requestArguments = NULL;
+
 
 HttpServer::HttpServer() {
 	this->defaultRequestHandler = NULL;
@@ -59,54 +65,54 @@ void HttpServer::check() {
 
 		while(client.connected()) {
 			if (client.available()) { 
-        		char c = client.read();
-        		// Serial.print(c);
+				char c = client.read();
+				// Serial.print(c);
 				if (headerFinished) {
-	       			body[currentLength++] = c;
-        			if (currentLength == contentLength) {
-    	   				break; // break while loop. Content retrieval finished,
-        			}
-        		} else {
-        			if (c == '\n') {
-        				if (currentLine.length() == 0) {	// header finished
-	        				headerFinished = true;
-	        				body = (char *)calloc((contentLength + 1), sizeof(char)); // allocate body array
-	        				//Serial.println("header finished");
-	        				if (contentLength == 0) {
-	        					break;	// we can break here, no content.
-	        				}
-    	    			} else {
-    	    				// look for request method. Should be the very first line
-    	    				if (method == NONE) {
-    	    					//Serial.println(currentLine);
-    	    					int idx = currentLine.indexOf(' ');
-    	    					if (idx > -1) {
-    	    						method = getMethod(currentLine.substring(0,idx));
-    	    					}
+					body[currentLength++] = c;
+					if (currentLength == contentLength) {
+						break; // break while loop. Content retrieval finished,
+					}
+				} else {
+					if (c == '\n') {
+						if (currentLine.length() == 0) {	// header finished
+							headerFinished = true;
+							body = (char *)calloc((contentLength + 1), sizeof(char)); // allocate body array
+							//Serial.println("header finished");
+							if (contentLength == 0) {
+								break;	// we can break here, no content.
+							}
+						} else {
+							// look for request method. Should be the very first line
+							if (method == NONE) {
+								//Serial.println(currentLine);
+								int idx = currentLine.indexOf(' ');
+								if (idx > -1) {
+									method = getMethod(currentLine.substring(0,idx));
+								}
 
-    	    					// Get the path from the same line
-    	    					int idxPath = currentLine.indexOf(' ', idx+1);
-    	    					if (idxPath > -1) {
-    	    						path = currentLine.substring(idx+1, idxPath);
-    	    					}
-    	    				}
+								// Get the path from the same line
+								int idxPath = currentLine.indexOf(' ', idx+1);
+								if (idxPath > -1) {
+									path = currentLine.substring(idx+1, idxPath);
+								}
+							}
 
-    	    				// look for the content length
-    	    				if (currentLine.startsWith("Content-Length:")) {
-    	    					contentLength = currentLine.substring(15).toInt();
+							// look for the content length
+							if (currentLine.startsWith("Content-Length:")) {
+								contentLength = currentLine.substring(15).toInt();
 
-    	    				// look for content type
-    	    				} else if (currentLine.startsWith("Content-Type:")) {
-    	    					contentType = currentLine.substring(13);
-    	    					contentType.trim();
-    	    				}
-    	    				currentLine = "";
-    	    			}
-        			} else if (c != '\r') {  
-          				currentLine += c;
-        			}
-        		}
-        	}
+							// look for content type
+							} else if (currentLine.startsWith("Content-Type:")) {
+								contentType = currentLine.substring(13);
+								contentType.trim();
+							}
+							currentLine = "";
+						}
+					} else if (c != '\r') {  
+						currentLine += c;
+					}
+				}
+			}
 		}
 
 		// call the handler and return the result
@@ -138,7 +144,7 @@ void HttpServer::check() {
 			free(body);
 		}
 		client.stop();
-    	//Serial.println("Client Disconnected.");
+		//Serial.println("Client Disconnected.");
 	}
 }
 
@@ -186,11 +192,15 @@ bool HttpServer::hasHandler(String path, Method method) {
 
 
 HttpServer::Handler* HttpServer::findHandler(String path, Method method) {
+	//get path without possible parameters
+	int idx = path.indexOf('?');
+	if (idx > 0) {
+		path = path.substring(0,idx);
+	}
 	for (int i = 0; i < handlers.size(); i++) {
 		Handler *h = handlers.get(i);
 		if (h && h->path.compareTo(path) == 0 && 
 			(h->method == method || h->method == Method::ALL)) {
-
 			return h;
 		}
 	}
@@ -295,7 +305,90 @@ String HttpServer::getResultMessage(int code) {
 // Init the WifiServer
 void HttpServer::initServer(int port) {
 	server = new WiFiServer(port);
-    server->begin();
+	server->begin();
 	//Serial.printf("Started server on port %d\n", port);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//	Static methods
+//
+
+int HttpServer::parseRequestArguments(String path) {
+
+	// free the old argument list
+	if (requestArguments != NULL) {
+		requestArgumentsCount = 0;
+		delete requestArguments;
+		requestArguments = NULL;
+	}
+
+	// get the arguments.
+	int qm = path.indexOf('?'); 
+	char *token, *argString, *tofree;
+	tofree = argString = strdup(path.substring(qm+1).c_str()); // This still works when qm is -1
+
+	// determine the number of arguments
+	requestArgumentsCount = 1;
+
+	for (unsigned int i = 0; i < strlen(argString); ) {
+		char *e = strchr(&argString[i], '&');
+		if (e == NULL) {
+			break;
+		}
+		i = (int)(e - argString) + 1;
+		requestArgumentsCount++;
+	}
+	requestArguments = new RequestArgument[requestArgumentsCount+1];
+
+	unsigned int idx = 0;
+	char *pair;
+	while ((pair = strsep(&argString, "&")) != NULL) {	// attn: argString ptr is changed
+		String p = String(pair);
+		int eq = p.indexOf('=');
+		if (eq == -1) {
+			continue;
+		}
+		requestArguments[idx].key = urlDecode(String(p.substring(0, eq)));
+		requestArguments[idx].value = urlDecode(String(p.substring(eq+1)));
+		idx++;
+	}
+	requestArgumentsCount = idx;
+	free(tofree);
+	return requestArgumentsCount;
+}
+
+
+String HttpServer::getRequestArgument(const String key) {
+	for (unsigned int i = 0; i < requestArgumentsCount; i++) {
+		if (requestArguments[i].key == key) {
+			return requestArguments[i].value;
+		}
+	}
+	return "";
+}
+
+String HttpServer::urlDecode(const String value) {
+	String result;
+	char temp[] = "0x00";
+	unsigned int len = value.length();
+	for (unsigned int i = 0; i < len; /**/ ) {
+		char ec = value.charAt(i++);
+		if ((ec == '%') && (i + 1 < len)) {
+			temp[2] = value.charAt(i++);
+			temp[3] = value.charAt(i++);
+			result += (char)strtol(temp, NULL, 16);
+		} else {
+			if (ec == '+') {
+				result += ' ';
+			} else {
+				result += ec;
+			}
+		}
+	}
+	return result;
+}
+
+
 

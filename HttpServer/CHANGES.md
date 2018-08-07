@@ -1,5 +1,9 @@
 # Changelog
 
+**2018-08-07**
+- Added methods for parsing and handling request arguments.
+- Added URL decoding method.
+
 **2018-04-23**
 - Fixed *WiFi.h* includes for different platforms.
 

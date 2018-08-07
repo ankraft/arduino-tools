@@ -134,7 +134,7 @@ Check whether a handler function has been defined for a path and method.
 *path* is a matching request path.  
 *method* is a matching request method (see enum *Method* below).
 
-### Request Argument Handling
+### Request Argument Handling Methods
 
 - **static int parseRequestArguments(String path)**  
 Parse a request path for arguments. Found arguments are stored them for later retrieval and processing. Only one set of arguments can be stored at a time for all instances of the HTTPServer class. The names and arguments are URL decoded in the process.  

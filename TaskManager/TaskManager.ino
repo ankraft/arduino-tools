@@ -23,8 +23,11 @@ void TaskManager::runTasks() {
 
 	for (int i = 0; i < tasks.size(); i++) {
 		Task *task = tasks.get(i);
+		if ( ! task->running) {
+			continue;
+		}
 
-		if (task->running && runTaskMs >= task->nextRun) {
+		if (runTaskMs >= task->nextRun) {
 			if (task->runOnTime) {
 				task->nextRun = task->nextRun + task->interval; // next run: n ms measured from *before* current task execution
 			}
@@ -35,7 +38,7 @@ void TaskManager::runTasks() {
 			bool result = (*task->taskHandler)();
 			task->runCount++;
 			if ( ! task->runOnTime) {
-				task->nextRun = millis() + task->interval; // next run: current time, after task handler returned, + intervall ms
+				task->nextRun = millis() + task->interval; // next run: current time, after task handler returned, + interval ms
 			}
 
 			if ( ! result) {
@@ -59,16 +62,16 @@ void TaskManager::runTasks() {
 }
 
 
-long TaskManager::addTask(TaskHandler taskHandler, unsigned long interval) {
+long TaskManager::addTask(const TaskHandler taskHandler, const unsigned long interval) {
 	return addTask(taskHandler, interval, true);
 }
 
 
-long TaskManager::addTask(TaskHandler taskHandler, unsigned long interval, bool autoStart) {
+long TaskManager::addTask(const TaskHandler taskHandler, const unsigned long interval, const bool autoStart) {
 	return addTask(taskHandler, NULL, NULL, interval, autoStart);
 }
 
-long TaskManager::addTask(TaskHandler taskHandler, TaskHandler initTaskHandler, TaskHandler deinitTaskHandler, unsigned long interval, bool autoStart) {
+long TaskManager::addTask(const TaskHandler taskHandler, const TaskHandler initTaskHandler, const TaskHandler deinitTaskHandler, const unsigned long interval, const bool autoStart) {
 	Task *task = new Task();
 	task->id = nextID++;
 	task->taskHandler = taskHandler;
@@ -93,7 +96,7 @@ long TaskManager::addTask(TaskHandler taskHandler, TaskHandler initTaskHandler, 
 }
 
 
-void TaskManager::removeTask(long taskId) {
+void TaskManager::removeTask(const long taskId) {
 	for (int i = 0; i < tasks.size(); i++) {
 		Task *task = tasks.get(i);
 		if (task->id == taskId) {
@@ -116,23 +119,23 @@ void TaskManager::reset() {
 }
 
 
-bool TaskManager::isTaskRunning(long taskId) {
+bool TaskManager::isTaskRunning(const long taskId) {
 	Task *task = _getTaskById(taskId);
 	return task? task->running : false;
 }
 
 
-void TaskManager::startTask(long taskId) {
+void TaskManager::startTask(const long taskId) {
 	startTask(taskId, 0, 0, 0);
 }
 
 
 
-void TaskManager::startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations) {
+void TaskManager::startTask(const long taskId, const unsigned long startAfter, const unsigned long runFor, const unsigned long iterations) {
 	startTask(taskId, startAfter, runFor, iterations, true);
 }
 
-void TaskManager::startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations, bool runOnTime) {
+void TaskManager::startTask(const long taskId, const unsigned long startAfter, const unsigned long runFor, const unsigned long iterations, const bool runOnTime) {
 	Task *task = _getTaskById(taskId);
 	if (task) {
 		if (task->inStart) {	// prevent double/endless calls
@@ -161,7 +164,7 @@ void TaskManager::startTask(long taskId, unsigned long startAfter, unsigned long
 }
 
 
-void TaskManager::stopTask(long taskId) {
+void TaskManager::stopTask(const long taskId) {
 	Task *task = _getTaskById(taskId);
 
 	if (task) {
@@ -184,7 +187,15 @@ void TaskManager::stopTask(long taskId) {
 }
 
 
-Task *TaskManager::_getTaskById(long taskId) {
+void TaskManager::setTaskInterval(const long taskId, const unsigned long interval) {
+	Task *task = _getTaskById(taskId);
+	if (task) {
+		task->interval = interval;
+	}
+}
+
+
+Task *TaskManager::_getTaskById(const long taskId) {
 	for (int i = 0; i < tasks.size(); i++) {
 		Task *task = tasks.get(i);
 		if (task->id == taskId) {

@@ -1,4 +1,4 @@
-/*
+	/*
  *	TaskManager.h
  *
  *	copyright (c) Andreas Kraft 2018
@@ -40,7 +40,7 @@ private:
 	long 				nextID;		// next uniq ID for tasks
 	unsigned long		runTaskMs;	// Current millis to use globally for current runTasks
 
-	Task 	*_getTaskById(long taskId);
+	Task 	*_getTaskById(const long taskId);
 
 public:
 	TaskManager();
@@ -54,14 +54,14 @@ public:
   	// *taskHandler* is a pointer to a function that is called for executing the task.
   	// *interval* is the time in milliseconds between task executions.
   	// The method returns a *taskID*, or -1 in case of an error.
-	long 	addTask(TaskHandler taskHandler, unsigned long interval);
+	long 	addTask(const TaskHandler taskHandler, const unsigned long interval);
 
 	// Add a new task.
   	// *taskHandler* is a pointer to a function that is called for executing the task.
   	// *interval* is the time in milliseconds between task executions.
   	// *autoStart* indicates whether the task execution should start implicitly, or must be started via one of the *startTask()* methods.
   	// The method returns a *taskID*, or -1 in case of an error.
-	long 	addTask(TaskHandler taskHandler, unsigned long interval, bool autoStart); 
+	long 	addTask(const TaskHandler taskHandler, const unsigned long interval, const bool autoStart); 
 
 	// Add a new task.
   	// *taskHandler* is a pointer to a function that is called for executing the task.
@@ -70,28 +70,28 @@ public:
   	// *interval* is the time in milliseconds between task executions.
   	// *autoStart* indicates whether the task execution should start implicitly, or must be started via one of the *startTask()* methods.
   	// The method returns a *taskID*, or -1 in case of an error.
-	long 	addTask(TaskHandler taskHandler, TaskHandler initTaskHandler, TaskHandler deinitTaskHandler, unsigned long interval, bool autoStart); 
+	long 	addTask(const TaskHandler taskHandler, const TaskHandler initTaskHandler, const TaskHandler deinitTaskHandler, const unsigned long interval, const bool autoStart); 
 
 	// Remove a task from the task manager.
 	// *taskId* is the ID of the task to be removed.
- 	void 	removeTask(long taskId);
+ 	void 	removeTask(const long taskId);
 
  	// Stop and remove all tasks and reset the task manager.
  	void	reset();
 
  	// Check whether a task is currently running.
-	bool 	isTaskRunning(long taskId);
+	bool 	isTaskRunning(const long taskId);
 
 	// Start a task.
 	// *taskId* is the ID of the task to be started.
-	void    startTask(long taskId);
+	void    startTask(const long taskId);
 
 	// Start a task.
 	// *taskId* is the ID of the task to be started.
 	// *startAfter* is the number of milliseconds after which the task is executed for the first time. 0 means immediately.
 	// *runFor* is the number of time in milliseconds for the task to run. 0 means forever.
 	// *iterations* is the number of times for the task to run. 0 means forever.
-	void    startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations);
+	void    startTask(const long taskId, const unsigned long startAfter, const unsigned long runFor, const unsigned long iterations);
 
 	// Start a task.
 	// *taskId* is the ID of the task to be started.
@@ -99,11 +99,16 @@ public:
 	// *runFor* is the number of time in milliseconds for the task to run. 0 means forever.
 	// *iterations* is the number of times for the task to run. 0 means forever.
  	// *runOnTime* if true then the TasManager tries to run the task exactly on the time slice (ie. after the interval time, including the time the task needs to execute), otherwise after *interval* ms after the task handler returned.  The default for other *startTask()* methods for this parameter is *true*.
-	void    startTask(long taskId, unsigned long startAfter, unsigned long runFor, unsigned long iterations, bool runOnTime);
+	void    startTask(const long taskId, const unsigned long startAfter, const unsigned long runFor, const unsigned long iterations, const bool runOnTime);
 
 	// Stop a task.
 	// *taskId* is the ID of the task to be stopped.
-	void    stopTask(long taskId);
+	void    stopTask(const long taskId);
+
+	// Set a new interval to a task. The change will be applied the next time the task runs.
+	// *taskId* is the ID of the task to be started.
+  	// *interval* is the time in milliseconds between task executions.
+	void	setTaskInterval(const long taskId, const unsigned long interval);
 };
 
 # endif

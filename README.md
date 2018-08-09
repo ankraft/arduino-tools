@@ -1,6 +1,8 @@
 # arduino-tools
 A collection of code snippets for Arduino programming.
 
+- [ConfigServer](ConfigServer) - A framework to set-up and operate a temporary configuration web page for an application.
+- [EEPROMStore](EEPROMStore) - A support class to persistently store values in a processor's EEPROM.
 - [HttpServer](HttpServer) - A simple HTTP Server Framework.
 - [LinkedList](LinkedList) - A template class that provides a single-linked ist implementation.
 - [oneM2M](oneM2M) - This class implements a very small but useful subset of

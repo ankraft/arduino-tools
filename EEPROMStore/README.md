@@ -13,16 +13,22 @@ The following example creates a store for 5 entries and 32 bytes for each entry.
 ```cpp
 # include "EEPROMStore.h"
 
-EEPROMStore store = EEPROMStore(5, 32);
+EEPROMStore *store;
+
+void setup() {
+	store = EEPROMStore(5, 32);
+} 
 
 ```
+
+**Note**: An *EEPROMStore* object must only be allocated after the board finished its initialization. The ```setup()``` method is a good place to allocate it.
 
 ### Store a String Value
 
 The following example stores the string "Hello, World" at index 0 in the store.
 
 ```cpp
-store.putString(0, "Hello, World");
+store->putString(0, "Hello, World");
 ```
 
 ### Retrieve a String Value
@@ -30,7 +36,7 @@ store.putString(0, "Hello, World");
 The following example retrieves the string value stored at index 0.
 
 ```cpp
-String str = store.getString(0);
+String str = store->getString(0);
 ```
 
 ### Working with Store Identifiers
@@ -42,15 +48,15 @@ The identifier must be a string and conform to the maximum length for entries of
 The following example shows how to check for the correct store and, if not found, initializes the store.
 
 ```cpp
-if (store.getStoreIdentifier() != "MYSTORE") {
+if (store->getStoreIdentifier() != "MYSTORE") {
 
   // clear the store and set the store identifier
-  store.clear();
-  store.setStoreIdentifier("MYSTORE");
+  store->clear();
+  store->setStoreIdentifier("MYSTORE");
 
   // set default values
-  store.setString(0, "first value");
-  store.setString(1, "second value");
+  store->setString(0, "first value");
+  store->setString(1, "second value");
 }
 ```
 

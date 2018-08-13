@@ -31,7 +31,7 @@ void EEPROMStore::_init(const int maxNumberOfEntries, const int entrySize, const
 	if (totalSize < 4 || totalSize > 4096) {
 		return;
 	}
-	EEPROM.begin(maxNumberOfEntries * entrySize);
+	EEPROM.begin(this->totalSize);
 # endif
 
 	this->ready = true;

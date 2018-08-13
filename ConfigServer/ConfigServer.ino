@@ -159,13 +159,16 @@ HttpServer::RequestResult ConfigServer::_pageRequestHandler(String path, HttpSer
 	result.content = "<html><head>";
 	result.content += "<title>" + title + "</title>";
 	result.content += "<style>";
-	result.content += "body { padding: 30px;} ";
-	result.content += "#config { font-family: \"Trebuchet MS\", Arial, Helvetica, sans-serif; border-collapse: collapse;} ";
-	result.content += "#config tr:nth-child(even){background-color: #f2f2f2;} ";
-	result.content += "#config td {border: 0px; padding: 8px; } ";
-	result.content += "#config td.header {margin-top: 20px; padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #555; color: white; } ";
-	result.content += "#config td.name {text-weight: bold; } ";
-	result.content += "#config .button {color: #DA2C43; display: block; width: 80%; margin: 0 auto; }";
+	result.content += "body {padding: 30px;} ";
+	result.content += "#config {font-family: \"Trebuchet MS\", Arial, Helvetica, sans-serif; border-collapse: collapse;} ";
+	result.content += "#config tr:nth-child(even) {background-color: #f2f2f2;} ";
+	result.content += "#config td {border: 0px; padding: 8px;} ";
+	result.content += "#config td.header {margin-top: 20px; padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #555; color: white;} ";
+	result.content += "#config td.name {text-weight: bold;} ";
+	result.content += "#config td.field {width: 250px;} ";
+	result.content += "#config td.submit {padding-top: 25px; padding-bottom: 25px; height:150%; background-color: white;} ";
+	result.content += "#config input {width: 100%; height:100%; font-size: 90%;} ";
+	result.content += "#config input[type=submit] {font-size:100%; color: #DA2C43; display: block; height:100%; width: 80%; margin: 0 auto;} ";
 	result.content += "</style>";
 	result.content += "</head><body>";
 	result.content +="<H1>" + title + "</H1>";
@@ -180,12 +183,12 @@ HttpServer::RequestResult ConfigServer::_pageRequestHandler(String path, HttpSer
 				result.content += "<td colspan=\"2\" class=\"header\">" + field.substring(2) + "</td>";
 			} else if (field.startsWith("S;")) {
 				result.content += "<td class=\"name\">" + field.substring(2) + "</td>";
-				result.content += "<td><input type=\"text\" name=\"" + String(nif) + "\" value=\"" + defaultValues[nif] + "\"></td>";
+				result.content += "<td class=\"field\"><input type=\"text\" name=\"" + String(nif) + "\" value=\"" + defaultValues[nif] + "\"></td>";
 				nif++;
 			}
 			result.content += "</tr>";
 		}
-		result.content += "<tr><td colspan=\"2\" style=\"padding-top: 25px;\"><input type=\"submit\" value=\"Submit\" class=\"button\"></td></tr>";
+		result.content += "<tr><td class=\"submit\" colspan=\"2\" style=\"padding-top: 25px;\"><input type=\"submit\" value=\"Submit\"></td></tr>";
 		result.content += "</table></form></body></html>";
 	}
 	return result;

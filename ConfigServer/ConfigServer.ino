@@ -108,8 +108,8 @@ void ConfigServer::end(const bool wifioff) {
 		return;
 	}
 	delete server;
-	delete formFields;
-	delete defaultValues;
+	delete [] formFields;
+	delete [] defaultValues;
 	WiFi.softAPdisconnect(true);
 	WiFi.mode(wifioff ? WIFI_OFF : WIFI_STA);
 	isActiveServer = false;

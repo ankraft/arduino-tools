@@ -2,7 +2,7 @@
 
 This class implements a simple task manager to handle the execution of multiple tasks for task-oriented programs. Tasks can be started, stopped, executed and scheduled to be executed after a certain time. 
 
-Using the class tremendously simplifies the handling of regular taks, such as polling input, updating output pins, or similar processes.
+Using the class tremendously simplifies the handling of regular tasks, such as polling input, updating output pins, or similar processes.
 
 ## Installation
 
